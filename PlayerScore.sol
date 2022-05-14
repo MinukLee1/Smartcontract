@@ -21,7 +21,7 @@ contract PlayerScore {
   }
 
 
-
+  
     struct TopScore{
         address addr;
         int score;
