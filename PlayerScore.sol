@@ -5,17 +5,17 @@ contract PlayerScore {
     uint maxTopScores = 5;
 
 // 솔리디티 통신 확인용 int
-    int public loggined_player_score = 10;
+    string public loggined_player_score = "aaa";
 
-  function SimpleStorage(int initVal) public {
+  function SimpleStorage(string initVal) public {
     loggined_player_score = initVal;
   }
 
-  function set(int x) public {
+  function set(string x) public {
     loggined_player_score = x;
   }
 
-  function get() constant public returns (int retVal) {
+  function get() constant public returns (string retVal) {
     return loggined_player_score;
   }
 
@@ -32,7 +32,7 @@ contract PlayerScore {
     mapping (address=>int) public userTopScores;
 
     function setTopScore(int score) {
-
+        
         var currentTopScore = userTopScores[msg.sender];
 
         if(currentTopScore < score){
@@ -63,9 +63,9 @@ contract PlayerScore {
         //         var newtopScore = TopScore(msg.sender, score);
         //         topScores[lowestScoreIndex] = newtopScore;
         //     }
-
+        
     }
-
+    
     // get user score function
    // function getTopScore() returns(address addr,int score){
    //     return userTopScores;
