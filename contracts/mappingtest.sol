@@ -1,108 +1,71 @@
-pragma solidity ^0.8.0 ;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-contract PlayerScore is ERC20 {
 
+contract P2DToken is ERC20 {
 
-    
-// 솔리디티 통신 확인용 int
-
-  // function SimpleStorage(int initVal) public {
-  //   loggined_player_score = initVal;
-  // }
-
-  //function set(int x) public {
-  //  loggined_player_score = x;
-  //}
-
-
-
-  // 두개의 return값 출력 (address, score)
-
-
-// 지갑별 playscore 비교 code
-//-----------------------
     uint maxTopScores = 5;
+    uint public amount = 10000000000000000 ;
+    uint public score;
+    address payable public _addr = payable(0xC0c9093Df0fefd899f82aE6735C2e0730eD9D428);
 
     struct TopScore{
         address addr;
-        int score;
+        uint256 score;
     }
 
     TopScore[] public topScores;
 
-    mapping (address=>uint) public userTopScores;
+    mapping(address => uint256) public _userscore;
+    mapping(address => uint256) private _balances;
 
-    uint public score;
-    constructor() ERC20("PlaytoDonate","P2D"){}
+    constructor() ERC20("PlaytoDonate", "P2D") {}
 
- function setTopScore(uint _score) public{
-        //var currentTopScore = userTopScores[msg.sender];
-         
-             userTopScores[msg.sender] = _score;
-         }
-
-      // 순위에 맞게 저장된 지갑주소 뽑아주기 
-      function getplayerscore() public view returns(uint){
-        return userTopScores[msg.sender];
-    }
-
-    function reward(uint _score) public{
+        // token reward
+        function reward(uint _score) public {
         score = _score;
-        _mint(msg.sender,score);
-        
+        _mint(msg.sender, score);
+        _userscore[msg.sender] = score;
+
+        uint256 currentTopScore = _userscore[msg.sender];
+        if(currentTopScore < score){
+            _userscore[msg.sender] = score;
+        }
+
+        if(topScores.length < maxTopScores){
+            topScores.push(TopScore(msg.sender, score));
+        }else{
+            uint256 lowestScore = 0;
+            uint256 lowestScoreIndex = 0;
+            for (uint256 i = 0; i < topScores.length; i++)
+            {
+                TopScore storage currentScore = topScores[i];
+                if(i == 0){
+                    lowestScore = currentScore.score;
+                    lowestScoreIndex = i;
+                }else{
+                    if(lowestScore > currentScore.score){
+                        lowestScore = currentScore.score;
+                        lowestScoreIndex = i;
+                    }
+                }
+            }
+        }
     }
 
-    // function setTopScore(int score) {
-    //     var currentTopScore = userTopScores[msg.sender];
-    //     if(currentTopScore < score){
-    //         userTopScores[msg.sender] = score;
-    //     }
-
-    //     if(topScores.length < maxTopScores){
-    //         var topScore = TopScore(msg.sender, score);
-    //         topScores.push(topScore);
-    //     }else{
-    //         int lowestScore = 0;
-    //         uint lowestScoreIndex = 0; 
-    //         for (uint i = 0; i < topScores.length; i++)
-    //         {
-    //             TopScore currentScore = topScores[i];
-    //             if(i == 0){
-    //                 lowestScore = currentScore.score;
-    //                 lowestScoreIndex = i;
-    //             }else{
-    //                 if(lowestScore > currentScore.score){
-    //                     lowestScore = currentScore.score;
-    //                     lowestScoreIndex = i;
-    //                 }
-    //             }
-    //         }
-    //         if(score > lowestScore){
-    //             var newtopScore = TopScore(msg.sender, score);
-    //             topScores[lowestScoreIndex] = newtopScore;
-    //         }
-    //     }
-    // }
-   
-     // 순위에 맞게 지갑주소-점수 mapping 하기 
-     
-// function get() constant public returns (int retVal) {
-//    return loggined_player_score;
-//    }
-//     function getCountTopScores() returns(uint) {
-//         return topScores.length;
-//     }
-
-    // get user score function
-   // function getTopScore() returns(address addr,int score){
-   //     return userTopScores;
-  //  }
-
-//----------------------------------------------------
-    //mapping address and score 
-    //  function get_playerscore_result() public returns (address[]) {
-    //     return playscore_result;
-    // }
+// 배열의 특정 값과 for 문을 이용하여 배열의 전체 값을 불러 오기 위해 _number 라는 파라미터를 입력 받는다.
+    function getUserScore(uint _number) public view returns(address user_addr, uint user_score){
+        user_addr = topScores[_number].addr;
+        user_score = topScores[_number].score;
+    }
 
 
+        // token transfer
+        function send(uint256 _value) payable public {
+        require(_value >= amount);
+        require(_value < _balances[msg.sender]);
+        ERC20.transfer(_addr, _value);
+    }
 }
+
