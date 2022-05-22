@@ -1,7 +1,9 @@
-pragma solidity ^0.4.19 ;
-contract PlayerScore {
+pragma solidity ^0.8.0 ;
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+contract PlayerScore is ERC20 {
 
 
+    
 // 솔리디티 통신 확인용 int
 
   // function SimpleStorage(int initVal) public {
@@ -11,8 +13,6 @@ contract PlayerScore {
   //function set(int x) public {
   //  loggined_player_score = x;
   //}
-
-  
 
 
 
@@ -32,6 +32,9 @@ contract PlayerScore {
 
     mapping (address=>uint) public userTopScores;
 
+    uint public score;
+    constructor() ERC20("PlaytoDonate","P2D"){}
+
  function setTopScore(uint _score) public{
         //var currentTopScore = userTopScores[msg.sender];
          
@@ -43,6 +46,11 @@ contract PlayerScore {
         return userTopScores[msg.sender];
     }
 
+    function reward(uint _score) public{
+        score = _score;
+        _mint(msg.sender,score);
+        
+    }
 
     // function setTopScore(int score) {
     //     var currentTopScore = userTopScores[msg.sender];
