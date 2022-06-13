@@ -25,10 +25,3 @@ contract Whitelist is Ownable {
         return whitelist[_address];
     }
 }
-© 2022 GitHub, Inc.
-Terms
-Privacy
-Security
-Status
-Docs
-C
