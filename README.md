@@ -1,2 +1,2 @@
 # Smartcontract
-contracts for p2d project 
+contracts for play-to-donate project 
